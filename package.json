@@ -1,0 +1,29 @@
+{
+  "name": "the-impossible-room",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "tsx --test tests/state.test.ts",
+    "test:browser": "playwright test",
+    "assets": "node scripts/build-art.mjs",
+    "format": "prettier --write src tests scripts *.ts *.json *.html .github/workflows/*.yml",
+    "test:assets": "node scripts/check-art.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.0.0",
+    "prettier": "^3.9.10",
+    "sharp": "^0.34.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

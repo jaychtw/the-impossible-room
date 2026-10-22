@@ -32,6 +32,8 @@ select {
 }
 button {
   cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
 }
 button {
   color: inherit;
@@ -2261,7 +2263,7 @@ dialog::backdrop {
     margin-bottom: 14px;
   }
   .main-tab {
-    min-height: 42px;
+    min-height: 44px;
     padding-bottom: 11px;
   }
   .scene-tabs {

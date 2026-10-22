@@ -216,6 +216,12 @@ test("320px layout, bilingual dialogs and interactive target sizes", async ({
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
+    for (const target of await page.getByRole("button").all()) {
+      if (!(await target.isVisible())) continue;
+      const bounds = (await target.boundingBox())!;
+      expect(bounds.width).toBeGreaterThanOrEqual(44);
+      expect(bounds.height).toBeGreaterThanOrEqual(44);
+    }
     for (const id of ["bolt", "note", "clock"]) {
       const box = (await page.locator(`#object-${id}`).boundingBox())!;
       expect(box.width).toBeGreaterThanOrEqual(44);
@@ -381,7 +387,9 @@ for (const mode of ["keyboard", "touch"] as const) {
     await activate("hypothesis:H3");
     await activate("view:reconstruct");
     await activate("down:0");
+    if (mode === "keyboard") await expect(action(page, "down:0")).toBeFocused();
     await activate("down:1");
+    if (mode === "keyboard") await expect(action(page, "down:1")).toBeFocused();
     for (let i = 0; i < 3; i++) {
       const select = page.locator(`#match-${i}`);
       if (mode === "keyboard") {

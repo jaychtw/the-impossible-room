@@ -1,0 +1,2 @@
+# Markdown's two trailing spaces represent intentional hard line breaks.
+docs/handoff/*.md whitespace=-blank-at-eol

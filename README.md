@@ -44,6 +44,6 @@ Rebuild artwork with `npm run assets` after intentional source-asset changes. Th
 
 ## Deployment
 
-`.github/workflows/pages.yml` validates the game, runs desktop/mobile Chromium tests, uploads screenshots, and deploys `dist/` to GitHub Pages only after validation passes. Repository **Settings → Pages → Source** must be **GitHub Actions**. Production uses relative asset paths and supports the `/the-impossible-room/` project prefix.
+`.github/workflows/pages.yml` validates the game, runs desktop/mobile Chromium tests, uploads screenshots, and deploys `dist/` to GitHub Pages only after validation passes. It then repeats the browser suite against the public deployed URL and uploads hosted test evidence. Repository **Settings → Pages → Source** must be **GitHub Actions**. Production uses relative asset paths and supports the `/the-impossible-room/` project prefix.
 
 See [visual review](docs/VISUAL-POC-REVIEW.md), [QA report](docs/QA-REPORT.md), and [asset provenance](docs/ASSETS.md). The original supplied handoff is preserved in `docs/handoff/` as design input. Independent-player and physical-device acceptance remain separate from automated validation.

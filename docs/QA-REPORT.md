@@ -1,6 +1,6 @@
 # Release QA — The Impossible Room v1
 
-Date: 2026-10-22. This report records pre-deployment qualification. Hosted CI and deployment results are recorded by the repository's **Validate and deploy game** workflow and reported separately at delivery.
+Date: 2026-10-22. This report records release qualification. Hosted CI, deployment, and post-deployment browser results are recorded by the repository's **Validate and deploy game** workflow.
 
 ## Environment and results
 
@@ -13,7 +13,7 @@ Linux x86_64, Node **24.19.0**, npm **11.9.0**, Vite **7.3.7**, Playwright **1.6
 | `npm run test:assets` | **17 assets passed**; bolt scene/macro mean pixel discrepancy **5.13 / 255** after WebP compression; **1.90 MiB** total artwork, under 3 MiB budget |
 | `npm run build` | Passed strict TypeScript and Vite static build; relative asset paths; approximately **2.1 MiB** complete `dist/` |
 | `npm run test:browser` | **15 passed, 1 intentionally skipped**, zero failures; latest local release run 53.8 s |
-| `git diff --check` | Passed |
+| `git diff-tree --check --root HEAD` | Passed; original handoff Markdown hard breaks are explicitly preserved by `.gitattributes` |
 
 The skipped case is touch-only controls in the desktop project. The identical complete touch playthrough runs and passes in the mobile project. A skipped test is not counted as passed.
 
@@ -52,7 +52,7 @@ E1–E8 and both tests gate the conclusion; E9 is optional. No visible wire is t
 
 ## Deployment procedure
 
-Push to `main` triggers `.github/workflows/pages.yml`: frozen install → unit tests → asset continuity → static build → browser tests → artifact → GitHub Pages. Deploy depends on successful validation. Pages must use **GitHub Actions** as source, which was verified through the repository API before pushing. No secrets are shipped in the game. The existing platform Git/GitHub authentication is used for delivery.
+Push to `main` triggers `.github/workflows/pages.yml`: frozen install → unit tests → asset continuity → static build → browser tests → artifact → GitHub Pages → full browser tests against the hosted URL. Deploy depends on successful pre-deployment validation. Pages must use **GitHub Actions** as source, which was verified through the repository API before pushing. No secrets are shipped in the game. The existing platform Git/GitHub authentication is used for delivery.
 
 The same browser suite can target the hosted release with:
 
@@ -60,4 +60,8 @@ The same browser suite can target the hosted release with:
 GAME_TEST_URL=https://jaychtw.github.io/the-impossible-room/ npm run test:browser
 ```
 
-That command uses the deployed project prefix, does not launch Vite, and retains the same assertions and local-only runtime request checks. Its hosted result must be confirmed separately; defining the command is not a claim that it ran.
+That command uses the deployed project prefix, does not launch Vite, and retains the same assertions and same-host runtime request checks. The post-deployment job runs it on GitHub's runner and publishes `hosted-browser-evidence` separately from pre-deployment screenshots.
+
+The first published release, commit `657d39a`, passed [hosted CI and Pages deployment](https://github.com/jaychtw/the-impossible-room/actions/runs/39790560287). A TLS-verified HTTP request confirmed the live document and its matching release bundle. Serving the production artifact locally under `/the-impossible-room/` also passed real-browser entry, inspection, evidence-recording and language-switch checks with zero failed requests.
+
+Direct hosted-browser requests from this cloud machine initially failed with `ERR_CERT_AUTHORITY_INVALID` before loading the application (15 failed navigation attempts, one desktop-touch skip). The platform's existing CA was checked against Chromium's NSS trust database using the upstream documented process; verification was not disabled. The machine's browser trust issue remained, so post-deployment browser testing runs on GitHub's runner, whose normal HTTPS trust is independent of this cloud proxy. This failure is distinct from the passing local game tests and passing deployment.
